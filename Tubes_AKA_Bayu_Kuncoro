@@ -1,0 +1,153 @@
+import datetime
+import time
+import matplotlib.pyplot as plt
+import pandas as pd
+
+def input_peserta():
+    peserta = []
+    jumlah_peserta = int(input("Masukkan jumlah peserta: "))
+    for i in range(jumlah_peserta):
+        nama = input(f"Masukkan nama peserta ke-{i + 1}: ")
+        peserta.append(nama)
+    return peserta
+
+def input_tugas_panitia():
+    tugas = []
+    jumlah_tugas = int(input("Masukkan jumlah tugas panitia: "))
+    for i in range(jumlah_tugas):
+        tugas_panitia = input(f"Masukkan tugas panitia ke-{i + 1}: ")
+        tugas.append(tugas_panitia)
+    return tugas
+
+def buat_jadwal(peserta, tugas):
+    jadwal = []
+    waktu_awal = datetime.datetime.strptime(input("Masukkan waktu mulai acara (HH:MM): "), "%H:%M")
+    durasi = int(input("Masukkan durasi setiap tugas dalam menit: "))
+
+    for i, tugas in enumerate(tugas):
+        waktu_mulai = waktu_awal + datetime.timedelta(minutes=i * durasi)
+        waktu_selesai = waktu_mulai + datetime.timedelta(minutes=durasi)
+        panitia = peserta[i % len(peserta)]  # Panitia dipilih bergiliran
+        jadwal.append({
+            "Tugas": tugas,
+            "Waktu Mulai": waktu_mulai.strftime("%H:%M"),
+            "Waktu Selesai": waktu_selesai.strftime("%H:%M"),
+            "Penanggung Jawab": panitia,
+        })
+    return jadwal
+
+def tampilkan_jadwal(jadwal, judul, tujuan):
+    print(f"\n=== {judul} ===")
+    print(f"Tujuan: {tujuan}\n")
+    for item in jadwal:
+        print(f"Tugas: {item['Tugas']}")
+        print(f"Waktu Mulai: {item['Waktu Mulai']}")
+        print(f"Waktu Selesai: {item['Waktu Selesai']}")
+        print(f"Penanggung Jawab: {item['Penanggung Jawab']}")
+        print("-------------------")
+
+# Iterative version of a function (example: Fibonacci sequence)
+def fibonacci_iterative(n):
+    if n <= 1:
+        return n
+    a, b = 0, 1
+    for _ in range(2, n + 1):
+        a, b = b, a + b
+    return b
+
+# Recursive version of a function (example: Fibonacci sequence)
+def fibonacci_recursive(n):
+    if n <= 1:
+        return n
+    return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
+
+# Analyze running time of both algorithms
+def analyze_algorithms():
+    input_sizes = [1, 10, 20, 30, 35]  # Input sizes for analysis
+    iterative_times = []
+    recursive_times = []
+
+    for size in input_sizes:
+        # Measure iterative time
+        start_time = time.time()
+        fibonacci_iterative(size)
+        end_time = time.time()
+        iterative_times.append(end_time - start_time)
+
+        # Measure recursive time
+        start_time = time.time()
+        if size <= 35:  # Limit recursion to prevent stack overflow
+            fibonacci_recursive(size)
+        end_time = time.time()
+        recursive_times.append(end_time - start_time)
+
+    # Plot the iterative results
+    plt.figure(figsize=(10, 6))
+    plt.plot(input_sizes, iterative_times, label="Iterative", marker="o", color="blue")
+    plt.xlabel("Input Size (n)")
+    plt.ylabel("Time (seconds)")
+    plt.title("Performance of Iterative Algorithm")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    print("\n=== Rundown Iterative Algorithm ===")
+    for i, time_taken in enumerate(iterative_times):
+        print(f"Input Size {input_sizes[i]}: {time_taken:.6f} seconds")
+    print("Kompleksitas waktu: O(n)")
+
+    # Plot the recursive results
+    plt.figure(figsize=(10, 6))
+    plt.plot(input_sizes, recursive_times, label="Recursive", marker="o", color="red")
+    plt.xlabel("Input Size (n)")
+    plt.ylabel("Time (seconds)")
+    plt.title("Performance of Recursive Algorithm")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    print("\n=== Rundown Recursive Algorithm ===")
+    for i, time_taken in enumerate(recursive_times):
+        print(f"Input Size {input_sizes[i]}: {time_taken:.6f} seconds")
+    print("Kompleksitas waktu: O(2^n)")
+
+    # Plot comparison results
+    plt.figure(figsize=(10, 6))
+    plt.plot(input_sizes, iterative_times, label="Iterative", marker="o", color="blue")
+    plt.plot(input_sizes, recursive_times, label="Recursive", marker="o", color="red")
+    plt.xlabel("Input Size (n)")
+    plt.ylabel("Time (seconds)")
+    plt.title("Comparison of Iterative and Recursive Algorithms")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    # Summary
+    print("\n=== Summary of Algorithm Performance ===")
+    print("Iterative Algorithm:")
+    print(f"- Fastest time: {min(iterative_times):.6f} seconds")
+    print(f"- Slowest time: {max(iterative_times):.6f} seconds")
+    print(f"- Average time: {sum(iterative_times) / len(iterative_times):.6f} seconds")
+    print("Kompleksitas waktu: O(n)")
+
+    print("\nRecursive Algorithm:")
+    print(f"- Fastest time: {min(recursive_times):.6f} seconds")
+    print(f"- Slowest time: {max(recursive_times):.6f} seconds")
+    print(f"- Average time: {sum(recursive_times) / len(recursive_times):.6f} seconds")
+    print("Kompleksitas waktu: O(2^n)")
+
+def main():
+    print("=== Sistem Penjadwalan Acara Olahraga ===")
+    judul = input("Masukkan judul acara: ")
+    tujuan = input("Masukkan tujuan acara: ")
+    peserta = input_peserta()
+    tugas = input_tugas_panitia()
+    jadwal = buat_jadwal(peserta, tugas)
+    tampilkan_jadwal(jadwal, judul, tujuan)
+
+    print("\n=== Analisis Algoritma ===")
+    print("Menganalisis algoritma Fibonacci iteratif dan rekursif...")
+    analyze_algorithms()
+
+if __name__ == "__main__":
+    main()
